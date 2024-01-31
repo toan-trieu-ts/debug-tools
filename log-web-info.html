@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log Web Info</title>
+  </head>
+  <body>
+    <button>Log web info</button>
+
+    <pre id="info"></pre>
+
+    <script>
+      const logButton = document.querySelector("button");
+
+      logButton.addEventListener("click", async () => {
+        const userAgent = navigator.userAgent;
+        const platform = navigator.platform;
+        const vendor = navigator.vendor;
+        const infoContainer = document.getElementById("info");
+        const webInfo = {
+          userAgent,
+          platform,
+          vendor,
+        };
+
+        infoContainer.innerText = JSON.stringify(webInfo, null, 2);
+      });
+    </script>
+  </body>
+</html>

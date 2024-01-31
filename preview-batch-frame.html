@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Preview batch frame</title>
+
+    <style>
+      figure {
+        margin: 0;
+      }
+
+      figcaption {
+        text-align: center;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <input type="text" id="image-base64" />
+      <button type="button" id="preview-button">Preview</button>
+      <img id="image-preview" width="150" />
+    </div>
+
+    <div style="margin-block-start: 16px;">
+      <textarea id="frame-batch"></textarea>
+      <button type="button" id="preview-batch-button">Preview batch</button>
+      <div id="batch-preview" style="display: flex; gap:8px; flex-wrap: wrap;"></div>
+    </div>
+
+    <script type="text/javascript">
+      const previewButton = document.getElementById("preview-button");
+      previewButton.addEventListener("click", function () {
+        var imageBase64 = document.getElementById("image-base64").value;
+        const url = `data:image/jpeg;base64,${imageBase64}`;
+        document.getElementById("image-preview").src = url;
+      });
+
+      const previewBatchButton = document.getElementById(
+        "preview-batch-button"
+      );
+      previewBatchButton.addEventListener("click", function () {
+        // Clear previous batch
+        const batchPreview = document.getElementById("batch-preview");
+        batchPreview.innerHTML = "";
+
+        const frameBatch = document.getElementById("frame-batch").value;
+        const frames = JSON.parse(frameBatch);
+        batchPreview.innerHTML = "";
+        frames.forEach((frame) => {
+          const figure = document.createElement("figure");
+          const figcaption = document.createElement("figcaption");
+          figcaption.innerText = frame.index;
+
+          const url = `data:image/jpeg;base64,${frame.base64}`;
+          const img = document.createElement("img");
+          img.src = url;
+          img.title = frame.metadata;
+          img.width = 150;
+
+          figure.appendChild(img);
+          figure.appendChild(figcaption);
+
+          batchPreview.appendChild(figure);
+        });
+      });
+    </script>
+  </body>
+</html>
