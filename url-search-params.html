@@ -11,7 +11,7 @@
     <script>
         const searchParams = new URLSearchParams(window.location.search);
         const searchParamsContainer = document.getElementById('search-params-container');
-        searchParamsContainer.innerHTML = JSON.stringify(Object.fromEntries(searchParams));
+        searchParamsContainer.innerHTML = JSON.stringify(Object.fromEntries(searchParams), null, 2);
     </script>
 </body>
 </html>
