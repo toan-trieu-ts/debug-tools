@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <pre id="log"></pre>
+    <script>
+      function log(data) {
+        const logContainer = document.getElementById("log");
+        logContainer.innerHTML += JSON.stringify(data, null, 2) + '\n';
+      }
+      // Array of permissions
+      const permissions = [
+        "accelerometer",
+        "accessibility-events",
+        "ambient-light-sensor",
+        "background-sync",
+        "camera",
+        "clipboard-read",
+        "clipboard-write",
+        "geolocation",
+        "gyroscope",
+        "local-fonts",
+        "magnetometer",
+        "microphone",
+        "midi",
+        "notifications",
+        "payment-handler",
+        "persistent-storage",
+        "push",
+        "screen-wake-lock",
+        "storage-access",
+        "top-level-storage-access",
+        "window-management",
+      ];
+
+      processPermissions();
+
+      // Iterate through the permissions and log the result
+      async function processPermissions() {
+        for (const permission of permissions) {
+          const result = await getPermission(permission);
+          log(result);
+        }
+      }
+
+      // Query a single permission in a try...catch block and return result
+      async function getPermission(permission) {
+        try {
+          const result = await navigator.permissions.query({
+            name: permission,
+          });
+          return `${permission}: ${result.state}`;
+        } catch (error) {
+          return `${permission} (not supported)`;
+        }
+      }
+    </script>
+  </body>
+</html>
