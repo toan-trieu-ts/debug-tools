@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button onclick="openNewTab()">Open new tab</button>
+    <br />
+    <br />
+    <button onclick="createElementAndOpenNewTab()">Open new tab with create new element</button>
+
+    <script>
+      async function openNewTab() {
+        window.open("https://google.com", "_blank");
+      }
+
+      async function createElementAndOpenNewTab() {
+        const a = document.createElement("a");
+        a.href = "https://google.com";
+        a.target = "_blank";
+        a.click();
+      }
+    </script>
+  </body>
+</html>
