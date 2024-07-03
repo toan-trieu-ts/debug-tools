@@ -23,11 +23,29 @@
       <img id="image-preview" width="150" />
     </div>
 
-    <div style="margin-block-start: 16px;">
-      <textarea id="frame-batch"></textarea>
+    <div style="margin-block-start: 16px">
+      <div id="batch-container">
+        <textarea data-batch-id="1"></textarea>
+      </div>
+
+      <button type="button" id="add-batch-button">Add more batch</button>
       <button type="button" id="preview-batch-button">Preview batch</button>
-      <div id="batch-preview" style="display: flex; gap:8px; flex-wrap: wrap;"></div>
+      <div
+        id="batch-preview"
+        style="display: flex; gap: 8px; flex-wrap: wrap"
+      ></div>
     </div>
+
+    <script type="text/javascript">
+      const addBatchButton = document.getElementById("add-batch-button");
+      const batchContainer = document.getElementById("batch-container");
+      addBatchButton.addEventListener("click", function () {
+        const batchId = document.querySelectorAll("[data-batch-id]").length + 1;
+        const textarea = document.createElement("textarea");
+        textarea.setAttribute("data-batch-id", batchId);
+        batchContainer.appendChild(textarea);
+      });
+    </script>
 
     <script type="text/javascript">
       const previewButton = document.getElementById("preview-button");
@@ -45,24 +63,32 @@
         const batchPreview = document.getElementById("batch-preview");
         batchPreview.innerHTML = "";
 
-        const frameBatch = document.getElementById("frame-batch").value;
-        const frames = JSON.parse(frameBatch);
+        const frameBatches = document.querySelectorAll("[data-batch-id]");
         batchPreview.innerHTML = "";
-        frames.forEach((frame) => {
-          const figure = document.createElement("figure");
-          const figcaption = document.createElement("figcaption");
-          figcaption.innerText = frame.index;
 
-          const url = `data:image/jpeg;base64,${frame.base64}`;
-          const img = document.createElement("img");
-          img.src = url;
-          img.title = frame.metadata;
-          img.width = 150;
+        frameBatches.forEach((frameBatch) => {
+          try {
+            const frames = JSON.parse(frameBatch.value);
+            frames.forEach((frame) => {
+              const figure = document.createElement("figure");
+              const figcaption = document.createElement("figcaption");
+              figcaption.innerText = frame.index;
 
-          figure.appendChild(img);
-          figure.appendChild(figcaption);
+              const url = `data:image/jpeg;base64,${frame.base64}`;
+              const img = document.createElement("img");
+              img.src = url;
+              img.title = frame.metadata;
+              img.width = 150;
 
-          batchPreview.appendChild(figure);
+              figure.appendChild(img);
+              figure.appendChild(figcaption);
+
+              batchPreview.appendChild(figure);
+            });
+          } catch (error) {
+            console.error(error);
+            return;
+          }
         });
       });
     </script>
