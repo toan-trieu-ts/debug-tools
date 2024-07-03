@@ -23,13 +23,24 @@
       <img id="image-preview" width="150" />
     </div>
 
+    <hr />
+
     <div style="margin-block-start: 16px">
-      <div id="batch-container">
+      <button type="button" id="add-batch-button">Add batch</button>
+      <button type="button" id="preview-batch-button">Preview batch</button>
+      <div
+        id="batch-container"
+        style="
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-block: 8px;
+        "
+      >
         <textarea data-batch-id="1"></textarea>
       </div>
 
-      <button type="button" id="add-batch-button">Add more batch</button>
-      <button type="button" id="preview-batch-button">Preview batch</button>
       <div
         id="batch-preview"
         style="display: flex; gap: 8px; flex-wrap: wrap"
