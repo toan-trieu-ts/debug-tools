@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+	<link href="./css/base.css" rel="stylesheet" type="text/css">
+	<title>SVG Converter</title>
+</head >
+<body>
+	<hr>
+	<br>
+	<p id="title">SVG Converter</p>
+	<br>
+	<p id="sub_title">
+		Convert SVG path data to the Swift 5 UIBezierPath or NSBezierPath codes.
+	</p>
+	<br>
+	<table>
+        <tr>
+            <td id="viewboxL">
+                ViewBox:
+            </td>
+            <td id="viewboxR">
+                <input type="text" id="viewbox" size="30">
+            </td>
+        </tr>
+		<tr>
+			<td colspan="2">
+				<textarea id="input_area"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<button id="to_ui">To Swift UIBezierPath</button>
+			</td>
+			<td>
+				<button id="to_ns">To Swift NSBezierPath</button>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<textarea readonly id="output_area"></textarea>
+			</td>
+		</tr>
+	</table>
+	<br>
+	<br>
+	
+	<script type="text/javascript" src="./js/base.js"></script>
+</body>
+</html>

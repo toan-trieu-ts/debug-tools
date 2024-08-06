@@ -1,0 +1,96 @@
+body {
+	text-align: center;
+}
+
+hr {
+	width: 88%;
+	height: 10px;
+	background-color: #455A64;
+}
+
+p#title {
+	width: 88%;
+	margin: 0 auto;
+	font-size: 30px;
+	font-weight: bold;
+}
+
+p#sub_title {
+	width: 88%;
+	margin: 0 auto;
+	font-size: 20px;
+	font-weight: bolder;
+}
+
+p#explanation {
+	text-align: left;
+	width: 70%;
+	margin: 0 auto;
+	font-size: 20px;
+	font-weight: bolder;
+}
+
+table {
+	width: 90%;
+	margin: 0 auto;
+}
+
+td#viewboxL {
+    text-align: right;
+    font-size: 20px;
+}
+
+td#viewboxR {
+    text-align: left;
+}
+
+input[type="text"] {
+    font-size: 20px;
+}
+
+textarea#input_area,#output_area {
+	width: 98%;
+	height: 200px;
+	margin-top: 5px;
+	margin-bottom: 0px;
+	font-size: 20px;
+}
+
+textarea#output_area {
+	background-color: #F5F5F5;
+	height: 300px;
+}
+
+button {
+	width: 96%;
+	height: 50px;
+	font-size: 20px;
+	border-radius: 10px;
+	background-color: #FFFFFF;
+}
+
+button:hover {
+	background-color: #ECEFF1;
+}
+
+button:active {
+	background-color: #CFD8DC;
+}
+
+img#svg1 {
+	width: 20%;
+	height: auto;
+	margin: 5px auto;
+}
+
+img#svg2 {
+	width: 70%;
+	height: auto;
+	margin: 5px auto;
+}
+
+img#usecase {
+	width: 55%;
+	height: auto;
+	margin: 5px auto;
+}
