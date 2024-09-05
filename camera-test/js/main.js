@@ -2,9 +2,6 @@ const constraints = (window.constraints = {
   audio: false,
   video: {
     facingMode: "user",
-    width: {
-      ideal: 640,
-    },
   },
 });
 
