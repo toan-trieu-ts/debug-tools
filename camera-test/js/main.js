@@ -46,6 +46,10 @@ function errorMsg(msg, error) {
 
 async function init(e) {
   try {
+    // Log available devices
+    const devices = (await navigator.mediaDevices.enumerateDevices()).filter((device) => device.kind === "videoinput");
+    alert(JSON.stringify(devices, null, 2));
+
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
     handleSuccess(stream);
     e.target.disabled = true;
