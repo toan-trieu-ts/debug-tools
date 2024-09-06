@@ -14,9 +14,12 @@ function handleSuccess(stream) {
   console.log("Got stream with constraints:", constraints);
   console.log(`Using video device: ${videoTracks[0].label}`);
   console.log(`Stream info`, streamInfo);
-  video.oncanplaythrough = () => {
+  video.oncanplaythrough = async () => {
     video.play();
     console.log(`Video dimension width x height: ${video.videoWidth}x${video.videoHeight} px`);
+    // Log available devices
+    const devices = (await navigator.mediaDevices.enumerateDevices()).filter((device) => device.kind === "videoinput");
+    alert(JSON.stringify(devices, null, 2));
   }
 }
 
@@ -46,13 +49,8 @@ function errorMsg(msg, error) {
 
 async function init(e) {
   try {
-    
-
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
-    // Log available devices
-    const devices = (await navigator.mediaDevices.enumerateDevices()).filter((device) => device.kind === "videoinput");
-    alert(JSON.stringify(devices, null, 2));
     handleSuccess(stream);
     e.target.disabled = true;
   } catch (e) {
