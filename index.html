@@ -3,18 +3,188 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Debug tools</title>
+    <title>Debug Tools</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        width: 100%;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 40px;
+        font-size: 1.1rem;
+        font-weight: 400;
+      }
+
+      .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+      }
+
+      .tool-card {
+        display: block;
+        text-decoration: none;
+        background: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .tool-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .tool-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .tool-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        border-color: #667eea;
+      }
+
+      .tool-title {
+        color: #333;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .tool-description {
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+
+      .tool-icon {
+        width: 24px;
+        height: 24px;
+        margin-bottom: 12px;
+        opacity: 0.7;
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 40px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+          margin: 10px;
+        }
+        
+        h1 {
+          font-size: 2rem;
+        }
+        
+        .tools-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div style="display: flex;flex-direction: column;gap: 8px;">
-      <a href="./go-to-url.html">Go to URL</a>
-      <a href="./log-web-info.html">Log website info</a>
-      <a href="./open-new-tab.html">Open new tab</a>
-      <a href="./permission-query.html">Query permission</a>
-      <a href="./preview-batch-frame.html">Preview frame batch</a>
-      <a href="./url-search-params.html">View URL Search Params</a>
-      <a href="./svg-to-path-swift.html">SVG to Path Swift</a>
-      <a href="./camera-test.html">Camera test</a>
+    <div class="container">
+      <h1>🛠️ Debug Tools</h1>
+      <p class="subtitle">Web development and debugging utilities</p>
+      
+      <div class="tools-grid">
+        <a href="./go-to-url.html" class="tool-card">
+          <div class="tool-title">🌐 Go to URL</div>
+          <div class="tool-description">Navigate to any URL with custom parameters and options</div>
+        </a>
+        
+        <a href="./log-web-info.html" class="tool-card">
+          <div class="tool-title">📊 Log Website Info</div>
+          <div class="tool-description">Display detailed information about the current webpage</div>
+        </a>
+        
+        <a href="./open-new-tab.html" class="tool-card">
+          <div class="tool-title">🗂️ Open New Tab</div>
+          <div class="tool-description">Open URLs in new browser tabs programmatically</div>
+        </a>
+        
+        <a href="./permission-query.html" class="tool-card">
+          <div class="tool-title">🔐 Query Permissions</div>
+          <div class="tool-description">Check and manage browser permissions for various APIs</div>
+        </a>
+        
+        <a href="./preview-batch-frame.html" class="tool-card">
+          <div class="tool-title">🖼️ Preview Frame Batch</div>
+          <div class="tool-description">Preview and process multiple image frames in batches</div>
+        </a>
+        
+        <a href="./url-search-params.html" class="tool-card">
+          <div class="tool-title">🔍 URL Search Params</div>
+          <div class="tool-description">View and manipulate URL search parameters easily</div>
+        </a>
+        
+        <a href="./svg-to-path-swift/index.html" class="tool-card">
+          <div class="tool-title">📱 SVG to Swift Path</div>
+          <div class="tool-description">Convert SVG paths to Swift UIBezierPath code</div>
+        </a>
+        
+        <a href="./camera-test/index.html" class="tool-card">
+          <div class="tool-title">📸 Camera Test</div>
+          <div class="tool-description">Basic camera functionality testing and preview</div>
+        </a>
+        
+        <a href="./camera-tinker.html" class="tool-card">
+          <div class="tool-title">🎛️ Camera Tinker</div>
+          <div class="tool-description">Advanced camera controls and constraint testing</div>
+        </a>
+      </div>
     </div>
   </body>
 </html>

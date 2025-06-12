@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Constraints Tinker Tool</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #1c1e21;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #333;
+        }
+        #main-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            justify-content: center;
+        }
+        #video-container {
+            position: relative;
+            flex-grow: 1;
+            min-width: 300px;
+            max-width: 800px;
+        }
+        video {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            background-color: #000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            cursor: crosshair;
+        }
+        #poi-indicator {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 2px solid rgba(255, 0, 0, 0.8);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+            pointer-events: none; /* So it doesn't block clicks */
+        }
+        #controls {
+            flex-basis: 320px;
+            flex-grow: 0;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none; /* Hidden until camera starts */
+            height: 350px;
+            overflow-y: auto;
+        }
+        .control-group {
+            margin-bottom: 18px;
+            display: block; /* Always show all controls */
+        }
+        .control-group.unsupported {
+            opacity: 0.5;
+        }
+        .control-group.unsupported input,
+        .control-group.unsupported select {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            pointer-events: none;
+        }
+        .unsupported-message {
+            font-size: 0.8em;
+            color: #dc3545;
+            font-style: italic;
+            margin-top: 4px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        input[type="range"], select, input[type="checkbox"] {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .value-display {
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #606770;
+            margin-left: 10px;
+        }
+        #camera-selector {
+            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            min-width: 200px;
+        }
+        #start-button {
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 6px;
+            border: none;
+            background-color: #0d6efd;
+            color: white;
+            margin-bottom: 20px;
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 0.8em;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <select id="camera-selector">
+            <option value="">Loading cameras...</option>
+        </select>
+    </div>
+    
+    <button id="start-button">Start Camera</button>
+
+    <div id="main-container">
+        <div id="video-container">
+            <video id="video" autoplay playsinline></video>
+            <div id="poi-indicator"></div>
+        </div>
+        <div id="controls">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">Controls</h2>
+                <button id="stop-button" style="padding: 8px 16px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">Stop Camera</button>
+            </div>
+
+            <div class="control-group" data-constraint="whiteBalanceMode">
+                <label for="whiteBalanceMode">White Balance</label>
+                <select id="whiteBalanceMode"></select>
+            </div>
+            <div class="control-group" data-constraint="exposureMode">
+                <label for="exposureMode">Exposure Mode</label>
+                <select id="exposureMode"></select>
+            </div>
+            <div class="control-group" data-constraint="focusMode">
+                <label for="focusMode">Focus Mode</label>
+                <select id="focusMode"></select>
+            </div>
+
+            <div class="control-group" data-constraint="zoom">
+                <label for="zoom">Zoom<span class="value-display" data-value-for="zoom"></span></label>
+                <input type="range" id="zoom">
+            </div>
+             <div class="control-group" data-constraint="brightness">
+                <label for="brightness">Brightness<span class="value-display" data-value-for="brightness"></span></label>
+                <input type="range" id="brightness">
+            </div>
+            <div class="control-group" data-constraint="contrast">
+                <label for="contrast">Contrast<span class="value-display" data-value-for="contrast"></span></label>
+                <input type="range" id="contrast">
+            </div>
+            <div class="control-group" data-constraint="saturation">
+                <label for="saturation">Saturation<span class="value-display" data-value-for="saturation"></span></label>
+                <input type="range" id="saturation">
+            </div>
+            <div class="control-group" data-constraint="sharpness">
+                <label for="sharpness">Sharpness<span class="value-display" data-value-for="sharpness"></span></label>
+                <input type="range" id="sharpness">
+            </div>
+            <div class="control-group" data-constraint="exposureCompensation">
+                <label for="exposureCompensation">Exposure Comp (f-stop)<span class="value-display" data-value-for="exposureCompensation"></span></label>
+                <input type="range" id="exposureCompensation">
+            </div>
+            <div class="control-group" data-constraint="colorTemperature">
+                <label for="colorTemperature">Color Temp (Kelvin)<span class="value-display" data-value-for="colorTemperature"></span></label>
+                <input type="range" id="colorTemperature">
+            </div>
+            <div class="control-group" data-constraint="iso">
+                <label for="iso">ISO<span class="value-display" data-value-for="iso"></span></label>
+                <input type="range" id="iso">
+            </div>
+            <div class="control-group" data-constraint="focusDistance">
+                <label for="focusDistance">Focus Distance (m)<span class="value-display" data-value-for="focusDistance"></span></label>
+                <input type="range" id="focusDistance">
+            </div>
+
+            <div class="control-group" data-constraint="torch">
+                <label for="torch">
+                    <input type="checkbox" id="torch"> Torch (Flashlight)
+                </label>
+            </div>
+
+        </div>
+    </div>
+    
+    <footer>Page generated by AI.</footer>
+
+
+<script>
+    const videoElement = document.getElementById('video');
+    const controlsContainer = document.getElementById('controls');
+    const startButton = document.getElementById('start-button');
+    const stopButton = document.getElementById('stop-button');
+    const poiIndicator = document.getElementById('poi-indicator');
+    const cameraSelector = document.getElementById('camera-selector');
+
+    let track;
+    let availableCameras = [];
+
+    // Load available cameras on page load
+    window.addEventListener('load', async () => {
+        await loadAvailableCameras();
+    });
+
+    async function loadAvailableCameras() {
+        try {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            availableCameras = devices.filter(device => device.kind === 'videoinput');
+            
+            cameraSelector.innerHTML = '';
+            
+            if (availableCameras.length === 0) {
+                cameraSelector.innerHTML = '<option value="">No cameras found</option>';
+                startButton.disabled = true;
+                return;
+            }
+            
+            availableCameras.forEach((camera, index) => {
+                const option = document.createElement('option');
+                option.value = camera.deviceId;
+                option.textContent = camera.label || `Camera ${index + 1}`;
+                cameraSelector.appendChild(option);
+            });
+            
+            // Select the first camera by default
+            if (availableCameras.length > 0) {
+                cameraSelector.value = availableCameras[0].deviceId;
+            }
+        } catch (error) {
+            console.error("Error loading cameras:", error);
+            cameraSelector.innerHTML = '<option value="">Error loading cameras</option>';
+        }
+    }
+
+    function stopCamera() {
+        if (track) {
+            track.stop();
+            track = null;
+        }
+        videoElement.srcObject = null;
+        startButton.style.display = 'inline-block';
+        cameraSelector.style.display = 'inline-block';
+        controlsContainer.style.display = 'none';
+    }
+
+    startButton.addEventListener('click', async () => {
+        const selectedCameraId = cameraSelector.value;
+        if (!selectedCameraId) {
+            alert('Please select a camera first');
+            return;
+        }
+
+        try {
+            const constraints = {
+                video: {
+                    deviceId: { exact: selectedCameraId }
+                },
+                audio: false
+            };
+            
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+            videoElement.srcObject = stream;
+            [track] = stream.getVideoTracks();
+            
+            // Wait for the video to load to get correct dimensions
+            videoElement.addEventListener('loadedmetadata', () => {
+                initializeControls();
+            });
+
+            startButton.style.display = 'none';
+            cameraSelector.style.display = 'none';
+            controlsContainer.style.display = 'block';
+
+        } catch (error) {
+            console.error("Error accessing camera:", error);
+            alert(`Error accessing camera: ${error.name}. Please grant permission and try again.`);
+        }
+    });
+
+    stopButton.addEventListener('click', stopCamera);
+
+    function initializeControls() {
+        const capabilities = track.getCapabilities();
+        const settings = track.getSettings();
+        console.log('Capabilities:', capabilities);
+        console.log('Initial Settings:', settings);
+
+        // A helper function to build controls
+        const setupControl = (constraint) => {
+            const controlGroup = document.querySelector(`.control-group[data-constraint="${constraint}"]`);
+            const input = document.getElementById(constraint);
+            const valueDisplay = document.querySelector(`span[data-value-for="${constraint}"]`);
+            
+            if (!controlGroup) return;
+
+            if (!(constraint in capabilities)) {
+                console.log(`${constraint} is not supported.`);
+                
+                // Mark as unsupported and show message
+                controlGroup.classList.add('unsupported');
+                
+                // Add unsupported message if it doesn't exist
+                let unsupportedMsg = controlGroup.querySelector('.unsupported-message');
+                if (!unsupportedMsg) {
+                    unsupportedMsg = document.createElement('div');
+                    unsupportedMsg.className = 'unsupported-message';
+                    unsupportedMsg.textContent = 'Not supported on this camera';
+                    controlGroup.appendChild(unsupportedMsg);
+                }
+                
+                // Disable the input
+                if (input) {
+                    input.disabled = true;
+                    if (input.type === 'range') {
+                        input.value = 0;
+                        if (valueDisplay) valueDisplay.textContent = 'N/A';
+                    } else if (input.tagName.toLowerCase() === 'select') {
+                        input.innerHTML = '<option>Not supported</option>';
+                    } else if (input.type === 'checkbox') {
+                        input.checked = false;
+                    }
+                }
+                return;
+            }
+
+            // Remove unsupported class and message if they exist
+            controlGroup.classList.remove('unsupported');
+            const existingMsg = controlGroup.querySelector('.unsupported-message');
+            if (existingMsg) {
+                existingMsg.remove();
+            }
+
+            if (input.type === 'range') {
+                input.disabled = false;
+                input.min = capabilities[constraint].min;
+                input.max = capabilities[constraint].max;
+                input.step = capabilities[constraint].step;
+                input.value = settings[constraint];
+                if(valueDisplay) valueDisplay.textContent = input.value;
+
+                input.addEventListener('input', async () => {
+                    await track.applyConstraints({ advanced: [{ [constraint]: input.value }] });
+                    if(valueDisplay) valueDisplay.textContent = input.value;
+                });
+            } else if (input.tagName.toLowerCase() === 'select') {
+                input.disabled = false;
+                input.innerHTML = ''; // Clear existing options
+                capabilities[constraint].forEach(option => {
+                    const optionElement = document.createElement('option');
+                    optionElement.value = option;
+                    optionElement.textContent = option.charAt(0).toUpperCase() + option.slice(1);
+                    input.appendChild(optionElement);
+                });
+                input.value = settings[constraint];
+
+                input.addEventListener('change', async () => {
+                    await track.applyConstraints({ [constraint]: input.value });
+                });
+            } else if (input.type === 'checkbox') {
+                input.disabled = false;
+                input.checked = settings[constraint];
+                input.addEventListener('change', async () => {
+                    await track.applyConstraints({ advanced: [{ [constraint]: input.checked }] });
+                });
+            }
+        };
+
+        // List of all constraints to initialize
+        const allConstraints = [
+            'whiteBalanceMode', 'exposureMode', 'focusMode', 'zoom', 'brightness',
+            'contrast', 'saturation', 'sharpness', 'exposureCompensation',
+            'colorTemperature', 'iso', 'focusDistance', 'torch'
+        ];
+
+        allConstraints.forEach(setupControl);
+
+        // Special handler for points of interest
+        videoElement.addEventListener('click', async (event) => {
+            if (!('pointsOfInterest' in capabilities)) {
+                return;
+            }
+            const rect = videoElement.getBoundingClientRect();
+            // Normalize click coordinates to the video's resolution
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const normalizedX = x / rect.width;
+            const normalizedY = y / rect.height;
+
+            // Show visual feedback for the click
+            poiIndicator.style.left = `${x}px`;
+            poiIndicator.style.top = `${y}px`;
+            poiIndicator.style.opacity = '1';
+            setTimeout(() => { poiIndicator.style.opacity = '0'; }, 800);
+
+            try {
+                await track.applyConstraints({
+                    advanced: [{
+                        pointsOfInterest: [{
+                            x: normalizedX,
+                            y: normalizedY
+                        }]
+                    }]
+                });
+                console.log(`Set Point of Interest to: x=${normalizedX.toFixed(2)}, y=${normalizedY.toFixed(2)}`);
+            } catch (error) {
+                console.error("Failed to set Point of Interest:", error);
+            }
+        });
+    }
+
+</script>
+
+</body>
+</html>

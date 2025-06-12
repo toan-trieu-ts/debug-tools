@@ -3,28 +3,460 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Log Web Info</title>
+    <title>Log Web Info - Debug Tools</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        width: 100%;
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 2.2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .subtitle {
+        color: #666;
+        font-size: 1.1rem;
+        font-weight: 400;
+        margin-bottom: 20px;
+      }
+
+      .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        color: #667eea;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+        margin-bottom: 20px;
+      }
+
+      .back-button:hover {
+        color: #764ba2;
+      }
+
+      .controls {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn.secondary {
+        background: #f8f9fa;
+        color: #333;
+        border: 2px solid #e9ecef;
+      }
+
+      .btn.secondary:hover {
+        background: #e9ecef;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+        flex-shrink: 0;
+      }
+
+      .info-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 12px;
+        border: 1px solid #e9ecef;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .info-card h3 {
+        color: #333;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .info-card .value {
+        color: #666;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        word-break: break-word;
+      }
+
+      .log-container {
+        flex: 1;
+        background: #f8f9fa;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .log-header {
+        background: #fff;
+        padding: 15px 20px;
+        border-bottom: 1px solid #e9ecef;
+        font-weight: 600;
+        color: #333;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .timestamp {
+        font-size: 0.8rem;
+        color: #666;
+        font-weight: normal;
+      }
+
+      #info {
+        flex: 1;
+        padding: 12px;
+        margin: 0;
+        background: #fff;
+        color: #333;
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
+        font-size: 0.75rem;
+        line-height: 1.4;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        min-height: 200px;
+      }
+
+      .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 200px;
+        color: #666;
+        font-style: italic;
+      }
+
+      .empty-state .icon {
+        font-size: 3rem;
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+          align-items: stretch;
+        }
+
+        .container {
+          padding: 20px;
+          margin: 0;
+          height: 100vh;
+          border-radius: 0;
+          max-width: none;
+        }
+        
+        h1 {
+          font-size: 1.6rem;
+        }
+
+        .subtitle {
+          font-size: 0.9rem;
+          margin-bottom: 16px;
+        }
+
+        .header {
+          margin-bottom: 20px;
+        }
+
+        .controls {
+          flex-direction: column;
+          margin-bottom: 16px;
+          gap: 8px;
+        }
+        
+        .btn {
+          width: 100%;
+          justify-content: center;
+          padding: 10px 16px;
+          font-size: 0.9rem;
+        }
+
+        .info-grid {
+          grid-template-columns: 1fr;
+          gap: 8px;
+          margin-bottom: 12px;
+        }
+
+        .info-card {
+          padding: 10px;
+        }
+
+        .info-card h3 {
+          font-size: 0.8rem;
+          margin-bottom: 6px;
+        }
+
+        .info-card .value {
+          font-size: 0.75rem;
+        }
+
+        .log-header {
+          padding: 10px 12px;
+          font-size: 0.9rem;
+        }
+
+        .timestamp {
+          font-size: 0.7rem;
+        }
+
+        #info {
+          padding: 10px;
+          font-size: 0.7rem;
+          line-height: 1.3;
+        }
+
+        .empty-state {
+          height: 120px;
+        }
+
+        .empty-state .icon {
+          font-size: 2rem;
+          margin-bottom: 8px;
+        }
+      }
+    </style>
   </head>
   <body>
-    <button>Log web info</button>
+    <div class="container">
+      <div class="header">
+        <a href="./index.html" class="back-button">← Back to Debug Tools</a>
+        <h1>📊 Log Web Info</h1>
+        <p class="subtitle">Display detailed information about the current webpage and browser</p>
+      </div>
 
-    <pre id="info"></pre>
+      <div class="controls">
+        <button class="btn" id="logButton">📋 Log Web Info</button>
+        <button class="btn secondary" onclick="clearInfo()">🗑️ Clear Info</button>
+        <button class="btn secondary" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+      </div>
+
+      <div class="info-grid" id="infoCards" style="display: none;">
+        <div class="info-card">
+          <h3>User Agent</h3>
+          <div class="value" id="userAgentValue"></div>
+        </div>
+        <div class="info-card">
+          <h3>Platform</h3>
+          <div class="value" id="platformValue"></div>
+        </div>
+        <div class="info-card">
+          <h3>Vendor</h3>
+          <div class="value" id="vendorValue"></div>
+        </div>
+        <div class="info-card">
+          <h3>Language</h3>
+          <div class="value" id="languageValue"></div>
+        </div>
+        <div class="info-card">
+          <h3>Screen Resolution</h3>
+          <div class="value" id="screenValue"></div>
+        </div>
+        <div class="info-card">
+          <h3>Viewport Size</h3>
+          <div class="value" id="viewportValue"></div>
+        </div>
+      </div>
+
+      <div class="log-container">
+        <div class="log-header">
+          Raw JSON Output
+          <span class="timestamp" id="timestamp"></span>
+        </div>
+        <pre id="info">
+          <div class="empty-state">
+            <div class="icon">📊</div>
+            <div>Click "Log Web Info" to display browser information</div>
+          </div>
+        </pre>
+      </div>
+    </div>
 
     <script>
-      const logButton = document.querySelector("button");
+      const logButton = document.getElementById("logButton");
+      let currentWebInfo = null;
+
+      function clearInfo() {
+        const infoContainer = document.getElementById("info");
+        const infoCards = document.getElementById("infoCards");
+        const timestamp = document.getElementById("timestamp");
+        
+        infoContainer.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">📊</div>
+            <div>Click "Log Web Info" to display browser information</div>
+          </div>
+        `;
+        infoCards.style.display = 'none';
+        timestamp.textContent = '';
+        currentWebInfo = null;
+      }
+
+      function updateInfoCards(webInfo) {
+        document.getElementById("userAgentValue").textContent = webInfo.userAgent;
+        document.getElementById("platformValue").textContent = webInfo.platform;
+        document.getElementById("vendorValue").textContent = webInfo.vendor || 'Not specified';
+        document.getElementById("languageValue").textContent = webInfo.language;
+        document.getElementById("screenValue").textContent = webInfo.screen;
+        document.getElementById("viewportValue").textContent = webInfo.viewport;
+        
+        document.getElementById("infoCards").style.display = 'grid';
+      }
+
+      async function copyToClipboard() {
+        if (!currentWebInfo) {
+          alert('No web info to copy. Please log web info first.');
+          return;
+        }
+
+        try {
+          const jsonString = JSON.stringify(currentWebInfo, null, 2);
+          await navigator.clipboard.writeText(jsonString);
+          
+          // Visual feedback
+          const btn = event.target;
+          const originalText = btn.innerHTML;
+          btn.innerHTML = '✓ Copied!';
+          btn.style.background = '#28a745';
+          
+          setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy: ', err);
+          alert('Failed to copy to clipboard');
+        }
+      }
 
       logButton.addEventListener("click", async () => {
-        const userAgent = navigator.userAgent;
-        const platform = navigator.platform;
-        const vendor = navigator.vendor;
+        const now = new Date();
+        const timestamp = document.getElementById("timestamp");
         const infoContainer = document.getElementById("info");
+        
+        timestamp.textContent = `Generated at ${now.toLocaleString()}`;
+
+        // Gather comprehensive web info
         const webInfo = {
-          userAgent,
-          platform,
-          vendor,
+          userAgent: navigator.userAgent,
+          platform: navigator.platform,
+          vendor: navigator.vendor,
+          language: navigator.language,
+          languages: navigator.languages,
+          cookieEnabled: navigator.cookieEnabled,
+          onLine: navigator.onLine,
+          screen: `${screen.width}x${screen.height} (${screen.colorDepth}-bit)`,
+          viewport: `${window.innerWidth}x${window.innerHeight}`,
+          devicePixelRatio: window.devicePixelRatio,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          url: window.location.href,
+          referrer: document.referrer || 'Direct access',
+          title: document.title,
+          lastModified: document.lastModified,
+          characterSet: document.characterSet,
+          readyState: document.readyState,
+          timestamp: now.toISOString(),
         };
 
-        infoContainer.innerText = JSON.stringify(webInfo, null, 2);
+        // Add browser detection
+        const userAgent = navigator.userAgent.toLowerCase();
+        let browser = 'Unknown';
+        if (userAgent.includes('chrome') && !userAgent.includes('edg')) browser = 'Chrome';
+        else if (userAgent.includes('firefox')) browser = 'Firefox';
+        else if (userAgent.includes('safari') && !userAgent.includes('chrome')) browser = 'Safari';
+        else if (userAgent.includes('edg')) browser = 'Edge';
+        else if (userAgent.includes('opera')) browser = 'Opera';
+        
+        webInfo.detectedBrowser = browser;
+
+        // Add connection info if available
+        if ('connection' in navigator) {
+          webInfo.connection = {
+            effectiveType: navigator.connection.effectiveType,
+            downlink: navigator.connection.downlink,
+            rtt: navigator.connection.rtt,
+            saveData: navigator.connection.saveData
+          };
+        }
+
+        currentWebInfo = webInfo;
+        updateInfoCards(webInfo);
+        infoContainer.textContent = JSON.stringify(webInfo, null, 2);
+      });
+
+      // Auto-run on page load
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          logButton.click();
+        }, 500);
       });
     </script>
   </body>

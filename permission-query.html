@@ -3,15 +3,285 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Permission Query - Debug Tools</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        width: 100%;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 2.2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .subtitle {
+        color: #666;
+        font-size: 1.1rem;
+        font-weight: 400;
+        margin-bottom: 20px;
+      }
+
+      .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        color: #667eea;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+        margin-bottom: 20px;
+      }
+
+      .back-button:hover {
+        color: #764ba2;
+      }
+
+      .controls {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn.secondary {
+        background: #f8f9fa;
+        color: #333;
+        border: 2px solid #e9ecef;
+      }
+
+      .btn.secondary:hover {
+        background: #e9ecef;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .status {
+        background: #e3f2fd;
+        border: 1px solid #bbdefb;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+        color: #1565c0;
+      }
+
+      .log-container {
+        flex: 1;
+        background: #f8f9fa;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .log-header {
+        background: #fff;
+        padding: 15px 20px;
+        border-bottom: 1px solid #e9ecef;
+        font-weight: 600;
+        color: #333;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .permission-count {
+        font-size: 0.8rem;
+        color: #666;
+        font-weight: normal;
+      }
+
+      #log {
+        flex: 1;
+        padding: 20px;
+        margin: 0;
+        background: #fff;
+        color: #333;
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
+        font-size: 0.85rem;
+        line-height: 1.6;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        max-height: 400px;
+      }
+
+      .permission-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .permission-name {
+        font-weight: 500;
+        color: #333;
+      }
+
+      .permission-status {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .status-granted {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status-denied {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .status-prompt {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .status-unsupported {
+        background: #e2e3e5;
+        color: #6c757d;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+          margin: 10px;
+          max-height: 90vh;
+        }
+        
+        h1 {
+          font-size: 1.8rem;
+        }
+
+        .controls {
+          flex-direction: column;
+        }
+        
+        .btn {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
   <body>
-    <pre id="log"></pre>
+    <div class="container">
+      <div class="header">
+        <a href="./index.html" class="back-button">← Back to Debug Tools</a>
+        <h1>🔐 Permission Query</h1>
+        <p class="subtitle">Check browser permissions for various APIs</p>
+      </div>
+
+      <div class="controls">
+        <button class="btn" onclick="processPermissions()">🔄 Refresh Permissions</button>
+        <button class="btn secondary" onclick="clearLog()">🗑️ Clear Log</button>
+      </div>
+
+      <div class="status" id="status">
+        Click "Refresh Permissions" to check browser API permissions
+      </div>
+
+      <div class="log-container">
+        <div class="log-header">
+          Permission Results
+          <span class="permission-count" id="permission-count"></span>
+        </div>
+        <pre id="log"></pre>
+      </div>
+    </div>
+
     <script>
+      let permissionResults = [];
+
       function log(data) {
         const logContainer = document.getElementById("log");
-        logContainer.innerHTML += JSON.stringify(data, null, 2) + '\n';
+        logContainer.innerHTML += data + '\n';
       }
+
+      function clearLog() {
+        const logContainer = document.getElementById("log");
+        logContainer.innerHTML = '';
+        permissionResults = [];
+        updatePermissionCount();
+        updateStatus("Log cleared");
+      }
+
+      function updateStatus(message) {
+        const statusElement = document.getElementById("status");
+        statusElement.textContent = message;
+      }
+
+      function updatePermissionCount() {
+        const countElement = document.getElementById("permission-count");
+        const granted = permissionResults.filter(r => r.includes(': granted')).length;
+        const denied = permissionResults.filter(r => r.includes(': denied')).length;
+        const prompt = permissionResults.filter(r => r.includes(': prompt')).length;
+        const unsupported = permissionResults.filter(r => r.includes('(not supported)')).length;
+        
+        countElement.innerHTML = `
+          <span style="color: #155724;">✓ ${granted}</span> |
+          <span style="color: #721c24;">✗ ${denied}</span> |
+          <span style="color: #856404;">? ${prompt}</span> |
+          <span style="color: #6c757d;">∅ ${unsupported}</span>
+        `;
+      }
+
       // Array of permissions
       const permissions = [
         "accelerometer",
@@ -37,14 +307,20 @@
         "window-management",
       ];
 
-      processPermissions();
-
       // Iterate through the permissions and log the result
       async function processPermissions() {
+        clearLog();
+        updateStatus("Checking permissions...");
+        permissionResults = [];
+
         for (const permission of permissions) {
           const result = await getPermission(permission);
           log(result);
+          permissionResults.push(result);
+          updatePermissionCount();
         }
+
+        updateStatus(`Completed checking ${permissions.length} permissions`);
       }
 
       // Query a single permission in a try...catch block and return result
@@ -58,6 +334,11 @@
           return `${permission} (not supported)`;
         }
       }
+
+      // Auto-run on page load
+      window.addEventListener('load', () => {
+        setTimeout(processPermissions, 500);
+      });
     </script>
   </body>
 </html>
