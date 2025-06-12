@@ -221,6 +221,19 @@
 
     async function loadAvailableCameras() {
         try {
+            // Request camera permission first to get device labels
+            let stream;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                // Stop the stream immediately as we only needed permission
+                stream.getTracks().forEach(track => track.stop());
+            } catch (permissionError) {
+                console.warn("Camera permission not granted:", permissionError);
+                cameraSelector.innerHTML = '<option value="">Camera permission required</option>';
+                startButton.disabled = true;
+                return;
+            }
+
             const devices = await navigator.mediaDevices.enumerateDevices();
             availableCameras = devices.filter(device => device.kind === 'videoinput');
             
@@ -242,10 +255,12 @@
             // Select the first camera by default
             if (availableCameras.length > 0) {
                 cameraSelector.value = availableCameras[0].deviceId;
+                startButton.disabled = false;
             }
         } catch (error) {
             console.error("Error loading cameras:", error);
             cameraSelector.innerHTML = '<option value="">Error loading cameras</option>';
+            startButton.disabled = true;
         }
     }
 
