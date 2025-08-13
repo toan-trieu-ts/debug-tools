@@ -119,6 +119,12 @@
             font-size: 0.8em;
             color: #888;
         }
+        .pre-controls {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -126,6 +132,16 @@
         <select id="camera-selector">
             <option value="">Loading cameras...</option>
         </select>
+    </div>
+    <div class="pre-controls">
+        <div class="control-group" data-constraint="width">
+            <label for="width">Width</label>
+            <input type="number" id="width" placeholder="e.g., 1920">
+        </div>
+        <div class="control-group" data-constraint="height">
+            <label for="height">Height</label>
+            <input type="number" id="height" placeholder="e.g., 1080">
+        </div>
     </div>
     
     <button id="start-button">Start Camera</button>
@@ -283,10 +299,22 @@
         }
 
         try {
+            const widthInput = document.getElementById('width');
+            const heightInput = document.getElementById('height');
+
+            const videoConstraints = {
+                deviceId: { exact: selectedCameraId }
+            };
+
+            if (widthInput.value) {
+                videoConstraints.width = { ideal: parseInt(widthInput.value, 10) };
+            }
+            if (heightInput.value) {
+                videoConstraints.height = { ideal: parseInt(heightInput.value, 10) };
+            }
+
             const constraints = {
-                video: {
-                    deviceId: { exact: selectedCameraId }
-                },
+                video: videoConstraints,
                 audio: false
             };
             
