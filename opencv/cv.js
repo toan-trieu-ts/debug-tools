@@ -404,7 +404,7 @@
         return filename.startsWith("file://");
       }
       var wasmBinaryFile;
-      wasmBinaryFile = "https://toan-trieu-ts.github.io/debug-tools/opencv/cv.wasm";
+      wasmBinaryFile = "cv.wasm";
       if (!isDataURI(wasmBinaryFile)) {
         wasmBinaryFile = locateFile(wasmBinaryFile);
       }
