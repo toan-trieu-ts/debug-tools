@@ -9,15 +9,41 @@
     <button onclick="openNewTab()">Open new tab</button>
     <br />
     <br />
-    <button onclick="createElementAndOpenNewTab()">Open new tab with create new element</button>
+    <button onclick="createElementAndOpenNewTab()">
+      Open new tab with create new element
+    </button>
 
     <br />
     <br />
-    <a href="https://tv-dj-web-ph-testing.trustingsocial.com/07b43db5-6a7d-4d9f-8ee2-0971a8a59965" target="_blank">Open new tab with anchor tag</a>
+    <a
+      href="https://tv-dj-web-ph-testing.trustingsocial.com/07b43db5-6a7d-4d9f-8ee2-0971a8a59965"
+      target="_blank"
+      >Open new tab with anchor tag</a
+    >
     <br />
-    <a href="googlechrome://tv-dj-web-ph-testing.trustingsocial.com/07b43db5-6a7d-4d9f-8ee2-0971a8a59965" target="_blank">Open new tab with anchor tag with Google Chrome</a>
+    <a
+      href="googlechrome://tv-dj-web-ph-testing.trustingsocial.com/07b43db5-6a7d-4d9f-8ee2-0971a8a59965"
+      target="_blank"
+      >Open new tab with anchor tag in Google Chrome</a
+    >
     <br />
-    <a href="com-apple-mobilesafari-tab:://tv-dj-web-ph-testing.trustingsocial.com/07b43db5-6a7d-4d9f-8ee2-0971a8a59965" target="_blank">Open new tab with anchor tag with Safari</a>
+    <a
+      href="com-apple-mobilesafari-tab:://tv-dj-web-ph-testing.trustingsocial.com/07b43db5-6a7d-4d9f-8ee2-0971a8a59965"
+      target="_blank"
+      >Open new tab with anchor tag in Safari</a
+    >
+    <br />
+    <a
+      href="firefox://open-url?url=tv-dj-web-ph-testing.trustingsocial.com/07b43db5-6a7d-4d9f-8ee2-0971a8a59965"
+      target="_blank"
+      >Open new tab with anchor tag in Firefox</a
+    >
+    <br />
+    <a
+      href="opera-https://tv-dj-web-ph-testing.trustingsocial.com/07b43db5-6a7d-4d9f-8ee2-0971a8a59965"
+      target="_blank"
+      >Open new tab with anchor tag in Opera</a
+    >
 
     <script>
       async function openNewTab() {
@@ -26,7 +52,8 @@
 
       async function createElementAndOpenNewTab() {
         const a = document.createElement("a");
-        a.href = "https://tv-dj-web-ph-testing.trustingsocial.com/07b43db5-6a7d-4d9f-8ee2-0971a8a59965";
+        a.href =
+          "https://tv-dj-web-ph-testing.trustingsocial.com/07b43db5-6a7d-4d9f-8ee2-0971a8a59965";
         a.target = "_blank";
         a.click();
       }
