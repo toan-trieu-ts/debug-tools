@@ -7,42 +7,48 @@
   </head>
   <body>
     <h4>Android</h4>
-    <a target="_blank"
+    <a
+      target="_blank"
       href="intent://example.com#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=https%3A%2F%2Fexample.com;end"
       >Chrome (stable)</a
     >
     <br />
-    <a target="_blank"
+    <a
+      target="_blank"
       href="intent://example.com#Intent;scheme=https;package=com.sec.android.app.sbrowser;S.browser_fallback_url=https%3A%2F%2Fexample.com;end"
       >Samsung Internet</a
     >
     <br />
-    <a target="_blank"
+    <a
+      target="_blank"
       href="intent://example.com#Intent;scheme=https;package=org.mozilla.firefox;S.browser_fallback_url=https%3A%2F%2Fexample.com;end"
       >Firefox</a
     >
     <br />
-    <a target="_blank"
-      href="microsoft-edge:https://example.com"
+    <a target="_blank" href="microsoft-edge:https://example.com"
       >Microsoft Edge</a
     >
     <br />
-    <a target="_blank"
+    <a
+      target="_blank"
       href="intent://example.com#Intent;scheme=https;package=com.opera.browser;S.browser_fallback_url=https%3A%2F%2Fexample.com;end"
       >Opera</a
     >
     <br />
-    <a target="_blank"
+    <a
+      target="_blank"
       href="intent://example.com#Intent;scheme=https;package=com.brave.browser;S.browser_fallback_url=https%3A%2F%2Fexample.com;end"
       >Brave</a
     >
     <br />
-    <a target="_blank"
+    <a
+      target="_blank"
       href="intent://example.com#Intent;scheme=https;package=com.duckduckgo.mobile.android;S.browser_fallback_url=https%3A%2F%2Fexample.com;end"
       >DuckDuckGo</a
     >
     <br />
-    <a target="_blank"
+    <a
+      target="_blank"
       href="intent://example.com#Intent;scheme=https;package=com.heytap.browser;S.browser_fallback_url=https%3A%2F%2Fexample.com;end"
       >HeyTap Browser</a
     >
@@ -52,24 +58,37 @@
     <!-- iOS Browsers -->
     <a target="_blank" href="googlechromes://example.com">Chrome (iOS)</a>
     <br />
-    <a target="_blank" href="firefox://open-url?url=https%3A%2F%2Fexample.com">Firefox (iOS)</a>
+    <a target="_blank" href="firefox://open-url?url=https%3A%2F%2Fexample.com"
+      >Firefox (iOS)</a
+    >
     <br />
-    <a target="_blank" href="microsoft-edge-https://example.com">Microsoft Edge (iOS)</a>
+    <a target="_blank" href="microsoft-edge-https://example.com"
+      >Microsoft Edge (iOS)</a
+    >
     <br />
-    <a target="_blank" href="brave://open-url?url=https%3A%2F%2Fexample.com">Brave (iOS)</a>
+    <a target="_blank" href="brave://open-url?url=https%3A%2F%2Fexample.com"
+      >Brave (iOS)</a
+    >
     <br />
-    <a target="_blank" href="touch-https://example.com">Opera Touch / Opera (iOS)</a>
+    <a target="_blank" href="touch-https://example.com"
+      >Opera Touch / Opera (iOS)</a
+    >
     <br />
-    <a target="_blank" href="ddgQuickLink://https%3A%2F%2Fexample.com">DuckDuckGo (iOS)</a>
+    <a target="_blank" href="ddgQuickLink://https%3A%2F%2Fexample.com"
+      >DuckDuckGo (iOS)</a
+    >
     <br />
     <a target="_blank" href="x-safari-https://example.com">Safari (iOS)</a>
     <br />
 
     <script>
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = "x-safari-https://example.com";
       link.target = "_blank";
-      window.location.href = "x-safari-https://example.com";
+      link.rel = "noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     </script>
   </body>
 </html>
