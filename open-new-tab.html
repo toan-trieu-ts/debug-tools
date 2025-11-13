@@ -57,6 +57,9 @@
     <a href="intent://example.com#Intent;end">Any browser</a>
     <br />
 
+    <button onclick="openAndroidIntentLink()">Manual open</button>
+    <br />
+
     <h4>iOS</h4>
     <!-- iOS Browsers -->
     <a target="_blank" href="googlechromes://example.com">Chrome (iOS)</a>
@@ -83,6 +86,12 @@
     <br />
     <a target="_blank" href="x-safari-https://example.com">Safari (iOS)</a>
     <br />
+
+    <script>
+      const openAndroidIntentLink = (url) => {
+        window.location.href = "intent://example.com#Intent;end"
+      };
+    </script>
 
     <!-- <script>
       const link = document.createElement("a");
