@@ -57,6 +57,9 @@
     <a href="intent://example.com#Intent;end">Any browser</a>
     <br />
 
+    <a href="intent:https://example.com#Intent;end">Any browser HTTPS</a>
+    <br />
+
     <button onclick="openAndroidIntentLink()">Manual open</button>
     <br />
 
@@ -89,7 +92,7 @@
 
     <script>
       const openAndroidIntentLink = (url) => {
-        window.location.href = "intent://example.com#Intent;end"
+        window.location.href = "intent:https://example.com#Intent;end"
       };
     </script>
 
